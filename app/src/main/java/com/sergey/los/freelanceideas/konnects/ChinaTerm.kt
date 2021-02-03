@@ -25,10 +25,17 @@ class ChinaTerm {
         @Throws(RemoteException::class)
         override fun onOpenComplete(b: Boolean) {
             Log.d(" df", "Opens complete !!! ")
-        } //           @Override
-        //           public IBinder adisplayStringinder() {
-        //                return null;
-        //           }
+              setupLosSam()
+
+            try {
+                displayBuildAndShow()
+
+            } catch (e: ArgumentException) {
+                e.printStackTrace()
+            } catch (e: FatalException) {
+                e.printStackTrace()
+            }
+        }
     }
 
 
@@ -88,11 +95,6 @@ class ChinaTerm {
 
             println(" my version sdk == " + mPaymentApi.sdkVersion)
 
-
-
-
-
-
         } catch (e: ArgumentException) {
             e.printStackTrace()
         } catch (e: FatalException) {
@@ -103,14 +105,15 @@ class ChinaTerm {
 
     fun ListenersCall(){
 
+        // com.sergey.los.freelanceideas.konnects
         DisplayLosCustom = iPaymentDeviceManager?.customerDisplay;
         DisplayLosCustom!!.registerCustomerDisplayListeners(TAG, mLosCustomDisplay)
         //  mLosCustomDisplay.reg
         println(" my display Custom Los 01 ");
         DisplayLosCustom!!.openCustomerDisplay(TAG)
         println(" my display Custom Los 03");
-        setupLosSam()
-        displayBuildAndShow()
+      //  setupLosSam()
+      //  displayBuildAndShow()
     }
 
      private fun setupLosSam() {
