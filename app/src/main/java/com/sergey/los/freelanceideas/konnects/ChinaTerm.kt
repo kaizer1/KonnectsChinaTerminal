@@ -12,7 +12,8 @@ class ChinaTerm {
     var DisplayLosCustom: ICustomerDisplay? = null
     lateinit var mPaymentApi : PaymentApi
     private var mIPaymentApi: IPaymentApi? = null
-    lateinit var iPaymentDeviceManager : IPaymentDeviceManager
+    private var mListener: IPaymentApiInitializationLosListener? = null
+    private var iPaymentDeviceManager : IPaymentDeviceManager? = null
     var callHandle : Handler = Handler()
 
     private val mLosCustomDisplay: ICustomerDisplayListener = object : ICustomerDisplayListener.Stub() {
@@ -31,6 +32,12 @@ class ChinaTerm {
     }
 
 
+    fun setIPaymentApiInitializationListener(listener: IPaymentApiInitializationLosListener) {
+        Log.d("llsd", "[in] los0 setIPaymentApiInitializationListener()")
+        this.mListener = listener
+        Log.d(" dfw", "[out] los1 setIPaymentApiInitializationListener()")
+    }
+
     private val mPaymentApiListener: IPaymentApiListener = object : IPaymentApiListener.Stub() {
         // PaymentApi is connected
         @Throws(RemoteException::class)
@@ -47,7 +54,7 @@ class ChinaTerm {
                     iPaymentDeviceManager = mIPaymentApi!!.getPaymentDeviceManager()
 
                     // Set IPaymentApiInitializationListener
-                    // mListener.onApiConnected()
+                    mListener?.onApiConnected()
                 } catch (e: TransactionException) {
                     e.printStackTrace()
                 } catch (e: FatalException) {
@@ -81,12 +88,10 @@ class ChinaTerm {
 
             println(" my version sdk == " + mPaymentApi.sdkVersion)
 
-            DisplayLosCustom = iPaymentDeviceManager.getCustomerDisplay();
-            DisplayLosCustom!!.registerCustomerDisplayListeners(TAG, mLosCustomDisplay)
-            //  mLosCustomDisplay.reg
-            println(" my display Custom Los 01 ");
-            DisplayLosCustom!!.openCustomerDisplay(TAG)
-            println(" my display Custom Los 03");
+
+
+
+
 
         } catch (e: ArgumentException) {
             e.printStackTrace()
@@ -95,7 +100,20 @@ class ChinaTerm {
         }
     }
 
-     fun setupLosSam() {
+
+    fun ListenersCall(){
+
+        DisplayLosCustom = iPaymentDeviceManager?.customerDisplay;
+        DisplayLosCustom!!.registerCustomerDisplayListeners(TAG, mLosCustomDisplay)
+        //  mLosCustomDisplay.reg
+        println(" my display Custom Los 01 ");
+        DisplayLosCustom!!.openCustomerDisplay(TAG)
+        println(" my display Custom Los 03");
+        setupLosSam()
+        displayBuildAndShow()
+    }
+
+     private fun setupLosSam() {
         try {
             DisplayLosCustom!!.setCustomerImage(TAG, ICustomerDisplay.IMAGE_KIND_DISPLAY, 25, FILE_PATH_DISPLAY_IMAGE)
             DisplayLosCustom!!.setCustomerImage(TAG, ICustomerDisplay.IMAGE_KIND_BUTTON, 10, FILE_PATH_BUTTON_YES_IMAGE)
@@ -107,7 +125,7 @@ class ChinaTerm {
         }
     }
 
-    fun displayBuildAndShow(): Boolean {
+    private fun displayBuildAndShow(): Boolean {
         val displayString = StringBuilder()
         displayString.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
         displayString.append("    <customerDisplayApi id=\"xxxxxxxxx\">")
