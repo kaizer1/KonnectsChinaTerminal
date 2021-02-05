@@ -15,26 +15,46 @@ class ChinaTerm {
     private var mListener: IPaymentApiInitializationLosListener? = null
     private var iPaymentDeviceManager : IPaymentDeviceManager? = null
     var callHandle : Handler = Handler()
+    var callableHandleDisp : Handler = Handler()
 
     private val mLosCustomDisplay: ICustomerDisplayListener = object : ICustomerDisplayListener.Stub() {
-        @Throws(RemoteException::class)
+
+
+          val runBut = object : Runnable {
+              override fun run() {
+                  Log.d(" calling's button detect's", "My call");
+              }
+          }
+
+         val runScreen = object : Runnable {
+             override fun run() {
+
+                 setupLosSam()
+
+                 try {
+                     displayBuildAndShow()
+
+                 } catch (e: ArgumentException) {
+                     e.printStackTrace()
+                 } catch (e: FatalException) {
+                     e.printStackTrace()
+                 }
+
+             }
+         }
+
+          @Throws(RemoteException::class)
         override fun onDetectButton(i: Int) {
-            Log.d(" df", "Buttons press'eds ")
+              Log.d(" df", "Buttons press'eds ")
+            callableHandleDisp.post(runBut)
+
         }
 
         @Throws(RemoteException::class)
         override fun onOpenComplete(b: Boolean) {
             Log.d(" df", "Opens complete !!! ")
-              setupLosSam()
+            callableHandleDisp.post(runScreen);
 
-            try {
-                displayBuildAndShow()
-
-            } catch (e: ArgumentException) {
-                e.printStackTrace()
-            } catch (e: FatalException) {
-                e.printStackTrace()
-            }
         }
     }
 
@@ -58,7 +78,7 @@ class ChinaTerm {
                     mIPaymentApi = mPaymentApi.paymentApi
 
                     // Get PaymentDeviceManager instance.
-                    iPaymentDeviceManager = mIPaymentApi!!.getPaymentDeviceManager()
+                    iPaymentDeviceManager = mIPaymentApi!!.paymentDeviceManager
 
                     // Set IPaymentApiInitializationListener
                     mListener?.onApiConnected()
