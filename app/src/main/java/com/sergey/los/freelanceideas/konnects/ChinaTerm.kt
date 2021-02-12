@@ -9,54 +9,12 @@ import com.panasonic.smartpayment.android.api.*
 
 class ChinaTerm {
 
-    var DisplayLosCustom: ICustomerDisplay? = null
+
     lateinit var mPaymentApi : PaymentApi
     private var mIPaymentApi: IPaymentApi? = null
     private var mListener: IPaymentApiInitializationLosListener? = null
     private var iPaymentDeviceManager : IPaymentDeviceManager? = null
     var callHandle : Handler = Handler()
-    var callableHandleDisp : Handler = Handler()
-
-    private val mLosCustomDisplay: ICustomerDisplayListener = object : ICustomerDisplayListener.Stub() {
-
-
-          val runBut = object : Runnable {
-              override fun run() {
-                  Log.d(" calling's button detect's", "My call");
-              }
-          }
-
-         val runScreen = object : Runnable {
-             override fun run() {
-
-                 setupLosSam()
-
-                 try {
-                     displayBuildAndShow()
-
-                 } catch (e: ArgumentException) {
-                     e.printStackTrace()
-                 } catch (e: FatalException) {
-                     e.printStackTrace()
-                 }
-
-             }
-         }
-
-          @Throws(RemoteException::class)
-        override fun onDetectButton(i: Int) {
-              Log.d(" df", "Buttons press'eds ")
-            callableHandleDisp.post(runBut)
-
-        }
-
-        @Throws(RemoteException::class)
-        override fun onOpenComplete(b: Boolean) {
-            Log.d(" df", "Opens complete !!! ")
-            callableHandleDisp.post(runScreen);
-
-        }
-    }
 
 
     fun setIPaymentApiInitializationListener(listener: IPaymentApiInitializationLosListener) {
@@ -72,15 +30,11 @@ class ChinaTerm {
             Log.d(TAG, "[in] onApiConnected()")
             callHandle.post(Runnable {
 
-                //  mCallbackHandler.post(Runnable {
                 try {
-                    // Get IPaymentApi instance.
                     mIPaymentApi = mPaymentApi.paymentApi
 
-                    // Get PaymentDeviceManager instance.
                     iPaymentDeviceManager = mIPaymentApi!!.paymentDeviceManager
 
-                    // Set IPaymentApiInitializationListener
                     mListener?.onApiConnected()
                 } catch (e: TransactionException) {
                     e.printStackTrace()
@@ -89,12 +43,9 @@ class ChinaTerm {
                 }
             })
 
-
-           // })
             Log.d(TAG, "[out] onApiConnected()")
         }
 
-        // PaymentApi isn't connected
         @Throws(RemoteException::class)
         override fun onApiDisconnected() {
             Log.d(TAG, "PaymentApi is disconnected")
@@ -102,6 +53,11 @@ class ChinaTerm {
     }
 
 
+    // -> IPaymentDeviceManager
+     fun getiPaymentDeviceManager(): IPaymentDeviceManager? {
+
+         return iPaymentDeviceManager;
+     }
 
      fun InitializeLos(Cont: Context) {
         try {
@@ -122,86 +78,14 @@ class ChinaTerm {
         }
     }
 
-
-    fun ListenersCall(){
-
-        // com.sergey.los.freelanceideas.konnects
-        DisplayLosCustom = iPaymentDeviceManager?.customerDisplay;
-        DisplayLosCustom!!.registerCustomerDisplayListeners(TAG, mLosCustomDisplay)
-        //  mLosCustomDisplay.reg
-        println(" my display Custom Los 01 ");
-        DisplayLosCustom!!.openCustomerDisplay(TAG)
-        println(" my display Custom Los 03");
-      //  setupLosSam()
-      //  displayBuildAndShow()
-    }
-
-     private fun setupLosSam() {
-        try {
-            DisplayLosCustom!!.setCustomerImage(TAG, ICustomerDisplay.IMAGE_KIND_DISPLAY, 25, FILE_PATH_DISPLAY_IMAGE)
-            DisplayLosCustom!!.setCustomerImage(TAG, ICustomerDisplay.IMAGE_KIND_BUTTON, 10, FILE_PATH_BUTTON_YES_IMAGE)
-            DisplayLosCustom!!.setCustomerImage(TAG, ICustomerDisplay.IMAGE_KIND_BUTTON, 11, FILE_PATH_BUTTON_CANCEL_IMAGE)
-        } catch (e: ArgumentException) {
-            e.printStackTrace()
-        } catch (e: FatalException) {
-            e.printStackTrace()
-        }
-    }
-
-    private fun displayBuildAndShow(): Boolean {
-        val displayString = StringBuilder()
-        displayString.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")
-        displayString.append("    <customerDisplayApi id=\"xxxxxxxxx\">")
-        displayString.append("    <screenPattern>3</screenPattern>")
-        displayString.append("    <headerArea>")
-        displayString.append("        <headerAreaNumber>1</headerAreaNumber>")
-        displayString.append("        <customerString>Revolving</customerString>")
-        displayString.append("    </headerArea>")
-        displayString.append("    <headerArea>")
-        displayString.append("        <headerAreaNumber>2</headerAreaNumber>")
-        displayString.append("        <customerString>Credit</customerString>")
-        displayString.append("    </headerArea>")
-        displayString.append("    <headerArea>")
-        displayString.append("        <headerAreaNumber>3</headerAreaNumber>")
-        displayString.append("        <customerString>$123.45</customerString>")
-        displayString.append("    </headerArea>")
-        displayString.append("    <imageArea>")
-        displayString.append("        <imageAreaNumber>1</imageAreaNumber>")
-        displayString.append("        <imageNumber>25</imageNumber>") // ID=25の画像を指定
-        displayString.append("    </imageArea>")
-        displayString.append("    <messageArea>")
-        displayString.append("        <messageAreaNumber>1</messageAreaNumber>")
-        displayString.append("        <customerString>PrEss and pay program mon</customerString>")
-        displayString.append("    </messageArea>")
-        displayString.append("    <buttonTop>")
-        displayString.append("        <buttonNumber>1</buttonNumber>")
-        displayString.append("        <imageNumber>10</imageNumber>") // ID=10のボタンを指定
-        displayString.append("    </buttonTop>")
-        displayString.append("    <buttonTop>")
-        displayString.append("        <buttonNumber>2</buttonNumber>")
-        displayString.append("        <imageNumber>11</imageNumber>") // ID=11のボタンを指定
-        displayString.append("    </buttonTop>")
-        displayString.append("</customerDisplayApi>")
-        return try {
-            DisplayLosCustom!!.doDisplayScreen(TAG, displayString.toString())
-            true
-        } catch (e: ArgumentException) {
-            e.printStackTrace()
-            false
-        } catch (e: FatalException) {
-            e.printStackTrace()
-            false
-        }
-    }
-
     fun terminateThis(Cont: Context) {
         try {
 
             mPaymentApi.term(Cont)
 
-            DisplayLosCustom!!.stopDetecting(TAG)
-            DisplayLosCustom!!.closeCustomerDisplay(TAG, false)
-            DisplayLosCustom!!.unregisterCustomerDisplayListeners(TAG)
+//                    ..  DisplayLosCustom!!.stopDetecting(TAG)
+//            DisplayLoCustom!!.closeCustomerDisplay(TAG, false)
+//            DisplayLosCustom!!.unregisterCustomerDisplayListeners(TAG)
         } catch (e: ArgumentException) {
             e.printStackTrace()
         } catch (e: FatalException) {
@@ -211,14 +95,12 @@ class ChinaTerm {
 
     companion object {
         private const val TAG = "com.sergey.los.freelanceideas.konnects"
-        private const val FILE_PATH_DISPLAY_IMAGE = "/sdcard/buttonsall.jpg"
-        private const val FILE_PATH_BUTTON_YES_IMAGE = "/sdcard/housebut.jpg"
-        private const val FILE_PATH_BUTTON_CANCEL_IMAGE = "/sdcard/wallpaperdog.jpg"
+//        private const val FILE_PATH_DISPLAY_IMAGE = "/sdcard/buttonsall.jpg"
+//        private const val FILE_PATH_BUTTON_YES_IMAGE = "/sdcard/housebut.jpg"
+//        private const val FILE_PATH_BUTTON_CANCEL_IMAGE = "/sdcard/wallpaperdog.jpg"
     }
 
     init {
         println(" loading ChineTerm")
-       // InitializeLos()
-       // setupLosSam()
     }
 }
