@@ -173,7 +173,7 @@ class ChinaDisplay {
 
     companion object {
         private const val TAG = "com.sergey.los.freelanceideas.konnects"
-        private const val FILE_PATH_DISPLAY_IMAGE = "/sdcard/buttonsall.jpg"
+        private const val FILE_PATH_DISPLAY_IMAGE = "/sdcard/buttonsall.png" // was .png
         private const val FILE_PATH_BUTTON_YES_IMAGE = "/sdcard/housebut.jpg"
         private const val FILE_PATH_BUTTON_CANCEL_IMAGE = "/sdcard/wallpaperdog.jpg"
     }
