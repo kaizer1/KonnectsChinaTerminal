@@ -17,7 +17,7 @@ import java.io.FileOutputStream
 import java.io.IOException
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsResultCallback  {
 
 
       // ChinaTerm chinaTerminal;
