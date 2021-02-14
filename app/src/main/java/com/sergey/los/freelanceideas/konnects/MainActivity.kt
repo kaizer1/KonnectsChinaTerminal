@@ -136,9 +136,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         chinaTerminal .terminateThis(this)
     }
 
-    fun getExternalStoragePath(): String? {
-        return Environment.getExternalStorageDirectory().absolutePath
-    }
+
 
 
     private fun isAllImageExisted(): Boolean {
@@ -242,5 +240,10 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
                 Manifest.permission.WRITE_EXTERNAL_STORAGE
         )
         private lateinit var mShortageFileList: Array<String?>
+
+
+        fun getExternalStoragePath(): String? {
+            return Environment.getExternalStorageDirectory().absolutePath
+        }
     }
 }

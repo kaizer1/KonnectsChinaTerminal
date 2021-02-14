@@ -102,9 +102,9 @@ class ChinaDisplay {
 
     private fun setupLosSam() {
         try {
-            mICustomerDisplay!!.setCustomerImage(ChinaDisplay.TAG, ICustomerDisplay.IMAGE_KIND_DISPLAY, 25, ChinaDisplay.FILE_PATH_DISPLAY_IMAGE)
-            mICustomerDisplay!!.setCustomerImage(ChinaDisplay.TAG, ICustomerDisplay.IMAGE_KIND_BUTTON, 10, ChinaDisplay.FILE_PATH_BUTTON_YES_IMAGE)
-            mICustomerDisplay!!.setCustomerImage(ChinaDisplay.TAG, ICustomerDisplay.IMAGE_KIND_BUTTON, 11, ChinaDisplay.FILE_PATH_BUTTON_CANCEL_IMAGE)
+            mICustomerDisplay.setCustomerImage(ChinaDisplay.TAG, ICustomerDisplay.IMAGE_KIND_DISPLAY, 25, ChinaDisplay.FILE_PATH_DISPLAY_IMAGE)
+            mICustomerDisplay.setCustomerImage(ChinaDisplay.TAG, ICustomerDisplay.IMAGE_KIND_BUTTON, 10, ChinaDisplay.FILE_PATH_BUTTON_YES_IMAGE)
+            mICustomerDisplay.setCustomerImage(ChinaDisplay.TAG, ICustomerDisplay.IMAGE_KIND_BUTTON, 11, ChinaDisplay.FILE_PATH_BUTTON_CANCEL_IMAGE)
         } catch (e: ArgumentException) {
             e.printStackTrace()
         } catch (e: FatalException) {
@@ -173,8 +173,9 @@ class ChinaDisplay {
 
     companion object {
         private const val TAG = "com.sergey.los.freelanceideas.konnects"
-        private const val FILE_PATH_DISPLAY_IMAGE = "/sdcard/buttonsall.jpg" // was .png
-        private const val FILE_PATH_BUTTON_YES_IMAGE = "/sdcard/housebut.jpg"
-        private const val FILE_PATH_BUTTON_CANCEL_IMAGE = "/sdcard/wallpaperdog.jpg"
+        private val FILE_PATH_DISPLAY_IMAGE : String = MainActivity.getExternalStoragePath().toString() +  "/buttonsall.jpg" // was .png
+        private val FILE_PATH_BUTTON_YES_IMAGE : String = MainActivity.getExternalStoragePath().toString() + "/housebut.jpg"
+        private val FILE_PATH_BUTTON_CANCEL_IMAGE : String = MainActivity.getExternalStoragePath().toString() + "/wallpaperdog.jpg"
+        //private val FILE_PATH_BUTTON_YES_IMAGE2: String = MainActivity.getExternalStoragePath().toString() + "/YES.jpg"
     }
 }
