@@ -186,6 +186,7 @@ class MainActivity : AppCompatActivity() {
     fun setImage() {
         for (i in 0 until mCount) {
             try {
+                  Log.d("df", " set image a01 $i")
                 val externalFile = File(getExternalStoragePath(), mShortageFileList.get(i))
                 val inputShortageFiles = resources.assets.open("imageToChina/" + mShortageFileList.get(i))
                 val outputShortageFiles = FileOutputStream(externalFile)
@@ -199,6 +200,7 @@ class MainActivity : AppCompatActivity() {
                 outputShortageFiles.close()
                 inputShortageFiles.close()
             } catch (e: IOException) {
+                Log.d(" df", " SetImage los - not image copy ")
                 e.printStackTrace()
             }
         }
