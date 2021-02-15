@@ -1,12 +1,12 @@
 package com.sergey.los.freelanceideas.konnects
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
 import android.os.Environment.*
+import android.os.Handler
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -67,6 +67,8 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     }
 
 
+    private val mCallbackHandler = Handler()
+    private var mRunnable: Runnable? = null
     override fun onResume() {
         super.onResume()
         setContentView(R.layout.activity_main)
@@ -87,7 +89,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
          })
 
         println(" start Resume's ")
-        chinaDisplay = ChinaDisplay(packageName, this)
+        chinaDisplay = ChinaDisplay(packageName, this@MainActivity)
         chinaTerminal.InitializeLos(application)
         println(" china terminal's ")
 
@@ -95,10 +97,13 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         chinaTerminal.setIPaymentApiInitializationListener(object : IPaymentApiInitializationLosListener {
 
             override fun onApiConnected() {
+                mCallbackHandler.post(Runnable {
+                    Log.d("df", " my calling to onApiLos ok 1")
+                    chinaDisplay.initializeCustomerDisplay(chinaTerminal.getiPaymentDeviceManager()!!)
+                    Log.d("df", " my calling to onApiLos ok 2")
+                }.also { mRunnable = it })
 
-                Log.d("df", " my calling to onApiLos ok 1")
-                chinaDisplay.initializeCustomerDisplay(chinaTerminal.getiPaymentDeviceManager()!!)
-                Log.d("df", " my calling to onApiLos ok 2")
+
             }
 
             override fun onApiDisconnected() {
@@ -120,11 +125,19 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        //chinaDisplay.terminateChinaDisplay(true)
+        //chinaTerminal .terminateThis(this)
+
+        mRunnable?.let { mCallbackHandler.removeCallbacks(it) }
+    }
 
     override fun onDestroy() {
         super.onDestroy()
 
         // terminateThis
+        chinaDisplay.terminateChinaDisplay(true)
         chinaTerminal .terminateThis(this)
     }
 
@@ -142,7 +155,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
             println(" ok trye  \n")
             filelist = assetManager.list("imageToChina")
             if (filelist != null) {
-                println( " sdflskdjf  = " + filelist.size)
+                println(" sdflskdjf  = " + filelist.size)
             }else{
                 println(" list Chine NULLLL ! \n")
             }
