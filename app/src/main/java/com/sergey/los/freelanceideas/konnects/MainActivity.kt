@@ -27,6 +27,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
     lateinit var chinaDisplay: ChinaDisplay
     lateinit var texSee : TextView
     lateinit var ButSee : Button
+    var sisplaYOn : Boolean = false
     var mHasPermission : Boolean = false
 
     val GOANOTHER = 1
@@ -81,7 +82,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         texSee =  findViewById<TextView>(R.id.texttosee)
         ButSee = findViewById<Button>(R.id.buttonconnect)
 
-          val intGo = Intent(this@MainActivity, CancelResult::class.java)
+          val intGo = Intent(this@MainActivity, CancelOne::class.java)
 
          ButSee.setOnClickListener(View.OnClickListener {
 
@@ -98,13 +99,13 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
             override fun onApiConnected() {
                 mCallbackHandler.post(Runnable {
+                    sisplaYOn = true
                     Log.d("df", " my calling to onApiLos ok 1")
                     chinaDisplay.initializeCustomerDisplay(chinaTerminal.getiPaymentDeviceManager()!!)
                     Log.d("df", " my calling to onApiLos ok 2")
                 }.also { mRunnable = it })
-
-
             }
+
 
             override fun onApiDisconnected() {
                 Log.d("df", " my calling End Api (failed)")
@@ -116,7 +117,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-
+          println(" Activity result for Main \n")
           val Inte = Intent(this@MainActivity, CancelResult::class.java)
            Inte.putExtra("ResultCode", resultCode)
          Inte.putExtra("myResult", "Result from activitys")
@@ -127,10 +128,14 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
     override fun onPause() {
         super.onPause()
-        //chinaDisplay.terminateChinaDisplay(true)
-        //chinaTerminal .terminateThis(this)
+         if( sisplaYOn){
+             chinaDisplay.terminateChinaDisplay(true)
+             chinaTerminal .terminateThis(this)
+         }
+
 
         mRunnable?.let { mCallbackHandler.removeCallbacks(it) }
+        sisplaYOn = false
     }
 
     override fun onDestroy() {

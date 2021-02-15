@@ -55,9 +55,10 @@ class CancelResult : Activity() {
 
           val inte = intent
           val resultCode = inte.getIntExtra("ResultCode", 0)
-
+                 println(" gettings = my Result Codes == $resultCode")
         if(resultCode == 0){
 
+              println(" calling my activity  and result code == 0 \n")
            chinaD1.initializeCustomerDisplay(IdeviceManage)
 
             chinaD1.setChinaTerminalListeners(object : ChinaDisplayListener {
@@ -118,6 +119,28 @@ class CancelResult : Activity() {
                 }
             })
           }
+
+        if (resultCode == 3){
+            println(" calling my activity  and result code == 3 \n")
+            chinaD1.initializeCustomerDisplay(IdeviceManage)
+
+            chinaD1.setChinaTerminalListeners(object : ChinaDisplayListener {
+                // Check if CustomerDisplay is connected
+                override fun onOpenChinaDisplay(boolean: Boolean) {
+                    if (boolean) {
+                        println("OmusubiCustomerDisplayCoupon was open. 222result=$boolean")
+                        chinaD1.showDisplay()
+                    } else {
+                        println("OmusubiCustomerDisplayCoupon wasn't open222333. result=$boolean")
+                    }
+                }
+
+                override fun onDetectButton(button: Int){
+
+                }
+            });
+
+            }
 
 
         butBack.setOnClickListener(View.OnClickListener {

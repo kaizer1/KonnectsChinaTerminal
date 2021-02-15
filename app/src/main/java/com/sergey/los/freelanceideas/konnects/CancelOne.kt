@@ -49,8 +49,9 @@ class CancelOne : Activity() {
         var intentRes = Intent(this@CancelOne, CancelResult::class.java)
 
           if( resultCode == 3){
-               Log.d("df", " start MainACtivity \n")
+               Log.d("df", " start MainACtivity from One activity\n")
               intentRes.putExtra("myResult", "From_ActivityMain")
+              intentRes.putExtra("ResultCode", 0)
 
           }
              intentRes.putExtra("ResultCode", resultCode)
