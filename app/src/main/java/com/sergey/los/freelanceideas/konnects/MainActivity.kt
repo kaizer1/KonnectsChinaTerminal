@@ -1,10 +1,12 @@
 package com.sergey.los.freelanceideas.konnects
 
 import android.Manifest
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.os.Environment
+import android.os.Environment.*
 import android.util.Log
 import android.view.View
 import android.widget.Button
@@ -49,7 +51,11 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         }
 
          // buttonconnect
-         println(" china terminal's ")
+         println(" china terminal's " + Environment.getExternalStorageState().toString())
+        println(" s fwqwfe = " + Environment.getExternalStorageDirectory().absolutePath)
+
+
+
 
         chinaTerminal = ChinaTerm()
 
@@ -58,16 +64,6 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
              println(" pressed buttons ! ")
 
          })
-
-         // = ChinaTerm()
-
-//        if(chinaTerminal.displayBuildAndShow()){
-//
-//        }else{
-//
-//        }
-
-         //   terminateThis
     }
 
 
@@ -77,9 +73,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
         if (isAllImageExisted()) {
             setImage()
-
         }
-
 
 
         texSee =  findViewById<TextView>(R.id.texttosee)
@@ -90,9 +84,7 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
          ButSee.setOnClickListener(View.OnClickListener {
 
              startActivity(intGo)
-
          })
-
 
         println(" start Resume's ")
         chinaDisplay = ChinaDisplay(packageName, this)
@@ -143,27 +135,39 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         var existShortageFile = false
 
 
-
+              println(" call is 01111 \n")
         val assetManager = resources.assets
         var filelist: Array<String>? = null
         try {
+            println(" ok trye  \n")
             filelist = assetManager.list("imageToChina")
+            if (filelist != null) {
+                println( " sdflskdjf  = " + filelist.size)
+            }else{
+                println(" list Chine NULLLL ! \n")
+            }
         } catch (e: IOException) {
+            println(" error lists \n")
             e.printStackTrace()
         }
+        println(" call is 01112 \n")
         val terminalDir = File(getExternalStoragePath())
+        println(" call is 01112 555 \n" + terminalDir.exists())
         val files = terminalDir.listFiles()!!
-
+        println(" call is 01113 \n" + files.size)
         val sdcardFileName = arrayOfNulls<String>(files.size + 1)
         for (i in files.indices) {
             val file = files[i]
             sdcardFileName[i] = file.name
         }
+        println(" call is 01114 \n")
         assert(filelist != null)
+        println(" call is 01115 \n")
         // was arrayOfNulls<String>(filelist!!.size)
         mShortageFileList = arrayOfNulls<String>(filelist!!.size)
         var j = 0
         for (i in filelist.indices) {
+            println(" call is 01116 \n")
             if (Arrays.asList(*sdcardFileName).contains(filelist[i])) {
                 Log.d("sdf", "A file needed already exists in the terminal.")
             } else {
@@ -181,6 +185,8 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
 
 
     //Push shortage images from assets folder to "/sdcard/" directory
+
+
     fun setImage() {
         for (i in 0 until mCount) {
             try {
@@ -242,8 +248,10 @@ class MainActivity : AppCompatActivity(), ActivityCompat.OnRequestPermissionsRes
         private lateinit var mShortageFileList: Array<String?>
 
 
-        fun getExternalStoragePath(): String? {
+        fun getExternalStoragePath(): String {
             return Environment.getExternalStorageDirectory().absolutePath
+        //    Context.getExternalStoragePublicDirectory()
+
         }
     }
 }
